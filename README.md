@@ -1,6 +1,6 @@
 # 🧠 MindCare - Mental Well-being Monitoring System
 
-**Advanced HCI Project 2025-2026** | University of Trento
+**Advanced HCI Project ** | University of Trento
 
 <div align="center">
 
