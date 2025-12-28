@@ -1,44 +1,124 @@
-# MindCare - Mental Well-being Monitoring System
+# 🧠 MindCare - Mental Well-being Monitoring System
 
-Advanced HCI Project 2025-2026
+**Advanced HCI Project 2025-2026** | University of Trento
 
-## Overview
+<div align="center">
 
-MindCare is an intelligent mental well-being monitoring system that uses facial expression recognition combined with multimodal interaction (camera, voice, touch) to passively detect stress and anxiety levels, providing real-time feedback and personalized recommendations.
+![MindCare Logo](demo_images/mindcare_logo_branding_1766956149036.png)
 
-## Features
+*An intelligent mental well-being monitoring system using facial expression recognition with multimodal interaction*
 
-- **Real-time Facial Expression Detection**: Continuous emotion monitoring using webcam
-- **Time-Window Aggregation**: Smooths predictions over 2-second windows to reduce noise
-- **Stress Pattern Detection**: Analyzes emotion trends every 30 seconds
-- **Privacy-First Design**: All processing happens locally, no cloud uploads
-- **Multimodal Interaction**: Camera (passive monitoring) + Voice/Touch interfaces
+[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![OpenCV](https://img.shields.io/badge/OpenCV-4.8+-green.svg)](https://opencv.org/)
+[![TensorFlow](https://img.shields.io/badge/TensorFlow-2.14+-orange.svg)](https://www.tensorflow.org/)
+[![License](https://img.shields.io/badge/License-Educational-lightgrey.svg)](LICENSE)
 
-## Requirements
+</div>
 
-### Hardware
-- Webcam (minimum 720p, 30fps recommended)
-- Processor: Intel i5 or equivalent, 2.5GHz+
-- RAM: 8GB minimum
-- OS: macOS 11+, Windows 10+, or Ubuntu 20.04+
+---
 
-### Software
+## 📋 Table of Contents
+
+- [Overview](#overview)
+- [Features](#features)
+- [Project Structure](#project-structure)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Documentation](#documentation)
+- [Demo Images](#demo-images)
+- [Technical Details](#technical-details)
+- [Limitations](#limitations)
+- [Author](#author)
+
+---
+
+## 🎯 Overview
+
+MindCare addresses a critical gap in mental health care: **many individuals fail to recognize early warning signs of stress and anxiety**, leading to delayed intervention and deteriorating outcomes.
+
+Our solution combines:
+- 🎥 **Passive Facial Expression Recognition** - Non-intrusive monitoring via webcam
+- 🎤 **Multimodal Interaction** - Camera, voice, and touch interfaces (ARCADE framework)
+- ⏱️ **Real-time Pattern Detection** - Stress alerts based on 15-minute emotion analysis
+- 🔒 **Privacy-First Design** - Local processing, no cloud uploads, encrypted storage
+
+---
+
+## ✨ Features
+
+### Implemented (Part III)
+- ✅ **Real-time Facial Expression Detection** using OpenCV Haar Cascades
+- ✅ **7-Emotion Classification** (happy, sad, angry, fearful, surprised, disgusted, neutral)
+- ✅ **Time-Window Processing** - 2-second sliding windows for smooth predictions
+- ✅ **Stress Pattern Detection** - Analyzes last 15 minutes every 30 seconds
+- ✅ **FSM State Management** - 19 states with comprehensive error handling
+- ✅ **Session Analytics** - Emotion distribution, valence scores, statistics
+
+### Documented (Parts I & II)
+- 📚 Critical literature review (FER + multimodal affective computing)
+- 👤 User-centered design (Persona: Maria Chen, software developer)
+- 🎨 Complete system architecture (UML Component + State Chart diagrams)
+- 🔧 Technical specifications (hardware, software, functionality)
+
+---
+
+## 📁 Project Structure
+
+```
+Advanced HCI/
+│
+├── 📄 Documentation (Part I & II)
+│   ├── final_report.md              # Complete 12-page project report
+│   ├── part1_problem_solution.md    # Problem, solution, ARCADE framework
+│   ├── literature_review.md         # Critical analysis of research
+│   ├── part2_user_design.md         # Persona, scenario, stakeholders
+│   ├── system_design.md             # Architecture, UML, specs
+│   └── demo_script.md               # 3-minute video demonstration guide
+│
+├── 💻 Implementation (Part III)
+│   ├── src/
+│   │   ├── main.py                  # Main application controller (~300 lines)
+│   │   ├── config.py                # Configuration management
+│   │   ├── face_detector.py         # Face detection with OpenCV (~150 lines)
+│   │   └── emotion_classifier.py    # CNN emotion + time windows (~180 lines)
+│   ├── part3_behavioral_model.md    # FSM specification (19 states)
+│   └── requirements.txt             # Python dependencies
+│
+├── 🎨 Demo Assets
+│   └── demo_images/                 # 6 professional UI mockups
+│
+├── 📊 Data (created at runtime)
+│   ├── models/                      # Pre-trained emotion models (user adds)
+│   └── logs/                        # Emotion logs
+│
+└── README.md                        # This file
+```
+
+**Total**: ~3,000 lines documentation + ~500 lines code
+
+---
+
+## 🚀 Installation
+
+### Prerequisites
 - Python 3.8 or higher
-- See `requirements.txt` for Python dependencies
+- Webcam (720p minimum recommended)
+- macOS, Windows 10+, or Ubuntu 20.04+
 
-## Installation
+### Setup
 
-1. **Clone or download this project**
+1. **Clone the repository**
    ```bash
-   cd "/Users/bzhang/Downloads/Advanced HCI"
+   git clone https://github.com/zbw123456/mindcare-hci.git
+   cd mindcare-hci
    ```
 
-2. **Create a virtual environment (recommended)**
+2. **Create virtual environment**
    ```bash
    python3 -m venv venv
-   source venv/bin/activate  # On macOS/Linux
+   source venv/bin/activate  # macOS/Linux
    # or
-   venv\Scripts\activate  # On Windows
+   venv\Scripts\activate     # Windows
    ```
 
 3. **Install dependencies**
@@ -46,161 +126,178 @@ MindCare is an intelligent mental well-being monitoring system that uses facial 
    pip install -r requirements.txt
    ```
 
-4. **Download a pre-trained emotion model (optional)**
-   
-   The system includes a demo CNN model that is NOT trained. For actual use, download a pre-trained model:
-   
-   - Option 1: Download from [face_classification](https://github.com/oarriaga/face_classification)
-   - Option 2: Train your own on FER-2013 dataset
-   
-   Place the model file at: `data/models/emotion_model.h5`
+4. **Download emotion model** (optional but recommended)
+   - **Option 1**: Download pre-trained FER+ model from [face_classification](https://github.com/oarriaga/face_classification)
+   - **Option 2**: Train your own on FER-2013 dataset
+   - Place model at: `data/models/emotion_model.h5`
 
-## Usage
+   ⚠️ **Note**: The included demo model is untrained and gives random predictions
 
-### Basic Usage
+---
 
-Run the application:
+## 💡 Usage
+
+### Quick Start
 
 ```bash
 cd src
 python main.py
 ```
 
-**Controls:**
-- `q` - Quit the application
+### Controls
+- `q` - Quit application
 - `p` - Pause/Resume monitoring
 
-### What to Expect
-
-1. **Initialization**: The app loads the face detector and emotion classifier
-2. **Hardware Check**: Verifies camera is available
-3. **Monitoring**: Real-time emotion detection with colored bounding boxes
-4. **Status Updates**: Console prints emotion status every ~1 second
-5. **Pattern Alerts**: Warnings if sustained stress is detected
-6. **Session Summary**: Emotion distribution and statistics when you quit
-
-### Example Output
+### Expected Output
 
 ```
 MindCare v1.0.0
 Initializing...
-Loading face detector...
-Loading emotion classifier...
 ✓ Initialization complete
-Checking camera...
 ✓ Camera found and accessible
 
 ==================================================
 MONITORING STARTED
 ==================================================
-Press 'q' to quit, 'p' to pause/resume
 
 [14:23:15] Emotion: NEUTRAL    | Confidence: 0.78 | Valence: +0.02
 [14:23:16] Emotion: HAPPY      | Confidence: 0.65 | Valence: +0.52
-[14:23:17] Emotion: NEUTRAL    | Confidence: 0.82 | Valence: +0.05
 ...
 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ⚠️  STRESS PATTERN DETECTED
    Negative emotions: 65.0% over last 20 readings
    Suggestion: Consider taking a short break
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+==================================================
+SESSION SUMMARY
+==================================================
+Emotion Distribution:
+  neutral   : ████████████ 60.0% (12)
+  happy     : ████ 20.0% (4)
+  sad       : ██ 10.0% (2)
+  ...
 ```
 
-## Project Structure
+---
 
-```
-Advanced HCI/
-├── src/
-│   ├── main.py                 # Main application controller
-│   ├── config.py               # Configuration settings
-│   ├── face_detector.py        # Face detection module
-│   └── emotion_classifier.py   # Emotion classification module
-├── data/
-│   ├── models/                 # Pre-trained models
-│   └── logs/                   # Emotion logs
-├── tests/                      # Unit tests (future)
-├── requirements.txt            # Python dependencies
-├── README.md                   # This file
-├── part1_problem_solution.md   # Part I: Problem definition
-├── literature_review.md        # Part I: Literature review
-├── part2_user_design.md        # Part II: Persona & scenario
-├── system_design.md            # Part II: System architecture
-└── part3_behavioral_model.md   # Part III: FSM specification
-```
+## 📚 Documentation
 
-## Implementation Details
+### Part I: Problem & Solution
+- **Problem**: Lack of early stress/anxiety detection awareness
+- **Solution**: MindCare with multimodal interaction (ARCADE framework)
+- **Analysis**: 3 pros, 3 cons, comprehensive literature review
+- **Files**: [`part1_problem_solution.md`](part1_problem_solution.md), [`literature_review.md`](literature_review.md)
 
-### Time-Window Processing
+### Part II: User Analysis & Design
+- **Persona**: Maria Chen, 28, software developer experiencing workplace stress
+- **Scenario**: Day-in-the-life showing system usage and stress detection
+- **Stakeholders**: 8 groups mapped with conflicting interests analyzed
+- **Architecture**: UML Component Diagram (4-layer), technical specifications
+- **Files**: [`part2_user_design.md`](part2_user_design.md), [`system_design.md`](system_design.md)
 
-The system implements sliding window aggregation:
-- Window size: 2 seconds (60 frames at 30fps)
-- Overlap: Continuous sliding
-- Aggregation: Weighted average of emotion probabilities
-- Output: Smoothed emotion classification every ~1 second
+### Part III: Implementation
+- **FSM**: 19 states with error management (UML State Chart)
+- **Code**: 4 Python modules implementing real-time FER with time-window processing
+- **Key Feature**: 2-second sliding windows for emotion aggregation
+- **Files**: [`part3_behavioral_model.md`](part3_behavioral_model.md), [`src/`](src/)
 
-### Stress Pattern Detection
+### Final Report
+- Comprehensive 12-page report integrating all parts
+- **File**: [`final_report.md`](final_report.md)
 
-Pattern checking occurs every 30 seconds:
-- Analyzes last 15 minutes of emotion data
-- Calculates ratio of negative emotions (sad, angry, fearful, disgusted)
-- Threshold: 60% negative emotions
-- Alert: Console warning with suggestions
+---
 
-### Privacy Features
+## 🎨 Demo Images
 
-- **No Frame Storage**: Raw video frames are never saved to disk
-- **Local Processing**: All computation happens on your device
-- **User Control**: Easy pause/resume, clear data retention policies
+Professional UI mockups for presentations:
 
-## Limitations
+| Image | Description |
+|-------|-------------|
+| ![Main Interface](demo_images/mindcare_main_interface_1766956132881.png) | Main application interface |
+| ![Logo](demo_images/mindcare_logo_branding_1766956149036.png) | MindCare branding |
+| ![ARCADE](demo_images/arcade_framework_diagram_1766956166507.png) | Multimodal interaction design |
+| ![Alert](demo_images/stress_alert_notification_1766956181141.png) | Stress pattern notification |
+| ![Timeline](demo_images/emotion_timeline_dashboard_1766956204779.png) | Emotion timeline visualization |
+| ![Persona](demo_images/maria_persona_card_1766956224488.png) | User persona card |
 
-1. **Demo Model**: The included CNN model is untrained - predictions are random
-   - Download a real model for actual use
-2. **Single Modality**: Current implementation focuses on camera input
-   - Voice and touch features are documented but not fully implemented
-3. **Limited Recommendations**: Basic rule-based suggestions
-4. **No Database**: Emotion history is in-memory only (not persisted)
+---
 
-## Future Enhancements
+## 🔧 Technical Details
 
-- Full PyQt5 GUI with rich visualizations
-- Voice command interface
-- Persistent database with encryption
-- Advanced pattern analysis (weekly trends, correlations)
-- Integration with calendar for context-aware monitoring
-- Breathing exercise modules
-- Export functionality (CSV, JSON)
+### Time-Window Data Processing
 
-## Troubleshooting
+**Implementation**:
+1. **Frame-level**: 30 fps emotion classification
+2. **Buffer**: Circular buffer storing last 60 predictions (2 seconds)
+3. **Aggregation**: Weighted average every 30 frames (~1 second)
+4. **Output**: Smoothed emotion with timestamp
 
-### Camera not found
-- Ensure webcam is connected
-- Check camera permissions in system settings
-- Try a different camera index in `config.py` (set `CAMERA_INDEX`)
+**Benefits**:
+- Reduces single-frame noise
+- Privacy-preserving (no frame storage)
+- Computationally efficient
 
-### Low Accuracy
-- Ensure good lighting conditions
-- Position face clearly in frame
-- Download a properly trained model
+### Multimodal Interaction (ARCADE)
 
-### Performance Issues
-- Reduce camera resolution in `config.py`
-- Close other camera-using applications
+- **Assignment**: Camera (passive), Voice (queries), Touch (config)
+- **Redundancy**: Status checks via voice OR touch
+- **Complementarity**: Camera (objective) + Voice (context) + Touch (visualization)
+- **Dominance**: Context-aware modal switching
+- **Equivalence**: Key functions accessible via multiple modalities
 
-## References
+### Technology Stack
 
-See `literature_review.md` for detailed scientific references on facial expression recognition and multimodal affective computing for mental health.
+- **Language**: Python 3.8+
+- **Computer Vision**: OpenCV 4.8+ (Haar Cascade face detection)
+- **Deep Learning**: TensorFlow 2.14+ (CNN emotion classification)
+- **UI**: PyQt5 5.15+ (planned), Console (implemented)
+- **Data**: SQLite3, AES-256 encryption
+- **Architecture**: MVC pattern with FSM state management
 
-## Author
+---
 
-Advanced HCI Project 2025-2026  
+## ⚠️ Limitations
+
+1. **Demo Model**: Included CNN is untrained - download real model for actual use
+2. **Single Modality Active**: Currently only camera input is functional
+3. **Console UI**: No graphical interface (OpenCV window + terminal only)
+4. **No Persistence**: Emotion history is in-memory only
+5. **Accuracy**: Real-world FER accuracy (~70%) is lower than lab benchmarks
+
+**Important**: This is a prototype for educational purposes. **NOT** a replacement for professional mental health services.
+
+---
+
+## 👨‍💻 Author
+
+**Advanced HCI Project 2025-2026**  
 University of Trento
 
-## License
+**Student**: Bowen Zhang  
+**Course**: Advanced Human-Computer Interaction  
+**Topic**: Mental Well-being Technology Solution
+
+---
+
+## 📄 License
 
 Educational project - not for commercial use.
 
 ---
 
-**Note**: This is a prototype system for educational purposes. It should NOT be used as a replacement for professional mental health services. If you're experiencing mental health issues, please consult with a qualified healthcare provider.
+## 🙏 Acknowledgments
+
+- Face_1.pdf reference material on Facial Expression Recognition
+- Research literature on FER and multimodal affective computing
+- OpenCV and TensorFlow communities
+- Course instructors and peers for feedback
+
+---
+
+<div align="center">
+
+**⚠️ Disclaimer**: This system should not be used as a medical diagnostic tool. If experiencing mental health issues, please consult qualified healthcare professionals.
+
+Made with 💜 for mental well-being awareness
+
+</div>
