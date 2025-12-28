@@ -270,7 +270,7 @@ Professional UI mockups for presentations:
 
 ## 👨‍💻 Author
 
-**Advanced HCI Project 2025-2026**  
+**Advanced HCI Project**  
 University of Trento
 
 **Student**: Bowen Zhang  
