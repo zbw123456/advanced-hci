@@ -29,6 +29,13 @@ class FaceDetector:
             if self.face_cascade.empty():
                 raise FileNotFoundError(f"Haar cascade file not found: {cascade_path}")
                 
+            # Load Smile Cascade for basic emotion detection
+            smile_path = cv2.data.haarcascades + 'haarcascade_smile.xml'
+            self.smile_cascade = cv2.CascadeClassifier(smile_path)
+            
+
+
+                
         elif method == 'dnn':
             # Load DNN model (optional, more accurate but slower)
             # Using OpenCV's pre-trained face detector
@@ -136,6 +143,28 @@ class FaceDetector:
             )
         
         return frame
+
+    def detect_smile(self, face_gray: np.ndarray) -> bool:
+        """
+        Detect if there is a smile in the face region.
+        
+        Args:
+            face_gray: Grayscale face ROI
+            
+        Returns:
+            True if smile detected, False otherwise
+        """
+        if hasattr(self, 'smile_cascade') and not self.smile_cascade.empty():
+            # Tuned parameters for smile detection
+            # ScaleFactor high to be fast and stricter
+            smiles = self.smile_cascade.detectMultiScale(
+                face_gray,
+                scaleFactor=1.7,
+                minNeighbors=20,
+                minSize=(25, 25)
+            )
+            return len(smiles) > 0
+        return False
 
 
 class CameraManager:

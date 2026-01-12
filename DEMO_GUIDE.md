@@ -251,6 +251,29 @@ The demo simulates voice commands via keyboard:
 
 ---
 
+## 🎵 Audio Emotion Recognition Demo (New!)
+
+We have also created a **dedicated standalone demo** for the Audio modality. This tool visualizes real-time audio waveforms and classifies simulated speech emotions.
+
+### How to Run:
+```bash
+./run_audio_demo.sh
+```
+
+### Features:
+*   **Large Visualization**: Dedicated window for detailed waveform analysis.
+*   **Audio-Specific Controls**: Simulate different emotional speech input.
+*   **Clear Classification**: Big, bold emotion labels.
+
+### Controls:
+*   `1`: Simulate **HAPPY** speech
+*   `2`: Simulate **ANGRY** speech
+*   `3`: Simulate **SAD** speech
+*   `4`: Simulate **NEUTRAL** speech
+*   `Q`: Quit
+
+---
+
 ## 🐛 Troubleshooting
 
 ### Camera Not Found

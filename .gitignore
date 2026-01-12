@@ -1,45 +1,35 @@
 # Python
 __pycache__/
 *.py[cod]
-*$py.class
-*.so
-.Python
+*.pyo
+*.pyd
 venv/
 env/
 ENV/
-*.egg-info/
-dist/
+
+# Data / models
+data/models/
+demo_images/
+*.h5
+*.ckpt
+*.pth
+
+# Build / dist
 build/
+dist/
+*.egg-info/
 
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# macOS
+# OS / editor
 .DS_Store
-.AppleDouble
-.LSOverride
+.vscode/
+*.swp
 
-# Data files
-data/logs/*.log
-data/models/*.h5
-data/models/*.pb
-*.db
-*.sqlite
-*.sqlite3
+# Secrets / config
+*.env
+src/camera_config.txt
+literature_review.pptx
 
-# Temporary files
-*.tmp
-*.bak
-*.cache
-
-# Environment variables
-.env
-.env.local
-
-# Project specific
-Face_1.pdf
-Advanced HCI- Project 2025-2026.pdf
+# Logs / temp
+*.log
+tmp/
+.cache/

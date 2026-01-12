@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Literature Review — Facial Emotion Recognition</title>
+  <style>
+    body { font-family: Arial, Helvetica, sans-serif; background:#111; color:#eee; margin:0; }
+    .slide { width:100vw; height:100vh; padding:48px; box-sizing:border-box; display:flex; flex-direction:column; justify-content:center; }
+    .title { font-size:36px; margin-bottom:12px; color:#ffd966 }
+    .subtitle { font-size:20px; color:#ccc; margin-bottom:24px }
+    ul { margin:0 0 0 20px; }
+    a { color:#9fd7ff }
+    .footer { position:fixed; right:18px; bottom:12px; color:#666; font-size:12px }
+  </style>
+</head>
+<body>
+
+<!-- Slide 1 -->
+<section class="slide" id="slide-1" style="background:linear-gradient(180deg,#0b1220,#071018)">
+  <div>
+    <div class="title">Literature Review: Camera-based Emotion Recognition</div>
+    <div class="subtitle">Key datasets, methods, and foundational works (selected)</div>
+    <ul>
+      <li><strong>Picard (1997)</strong> — Affective Computing (foundational framing for affect-aware systems). <a href="https://mitpress.mit.edu/9780262161704/affective-computing/" target="_blank">MIT Press</a></li>
+      <li><strong>Ekman & FACS</strong> — Facial Action Coding System (ground truth for expressions). <a href="https://www.paulekman.com/research/" target="_blank">Paul Ekman Research</a></li>
+      <li><strong>Pantic & Rothkrantz (2000)</strong> — Survey: automatic analysis of facial expressions (classical computer vision approaches).</li>
+      <li><strong>Mollahosseini et al. (2017)</strong> — <em>AffectNet</em>, large in-the-wild dataset for expression, valence, arousal. <a href="https://arxiv.org/abs/1708.03985" target="_blank">arXiv:1708.03985</a></li>
+      <li><strong>Barsoum et al. (2016)</strong> — <em>FER+</em> improvements and label refinement for deep FER. <a href="https://arxiv.org/abs/1608.01041" target="_blank">arXiv:1608.01041</a></li>
+      <li><strong>Li & Deng (survey)</strong> — Review of deep learning methods for facial expression recognition (recent survey papers consolidate modern architectures and challenges).</li>
+    </ul>
+  </div>
+  <div class="footer">Slide 1/2 — Literature Review</div>
+</section>
+
+<!-- Slide 2 -->
+<section class="slide" id="slide-2" style="background:linear-gradient(180deg,#081218,#071018)">
+  <div>
+    <div class="title">Takeaways & Implications for This Project</div>
+    <div class="subtitle">Practical points drawn from the literature</div>
+    <ul>
+      <li><strong>Datasets matter:</strong> In-the-wild datasets (AffectNet, FER+) drastically improve robustness compared to lab-controlled sets.</li>
+      <li><strong>Label quality:</strong> Crowd-sourced labels can be noisy; label refinement or soft-label approaches (FER+) improve performance.</li>
+      <li><strong>Model choice:</strong> Modern CNNs / fine-tuned backbones + temporal fusion (for video) give best accuracy; lightweight models are needed for real-time HCI.</li>
+      <li><strong>Multidimensional affect:</strong> Consider valence/arousal in addition to categorical emotions for richer interactions (supported by AffectNet).</li>
+      <li><strong>HCI concerns:</strong> Privacy, perceptual latency, and user acceptance are critical for camera-based emotion-aware interfaces (see Picard for framing).</li>
+    </ul>
+    <p style="margin-top:18px;color:#bbb">Suggested next steps: fine-tune a mobile/lightweight model on AffectNet/FER+, implement valence estimation, and add a short consent & privacy flow in the demo.</p>
+  </div>
+  <div class="footer">Slide 2/2 — Implications</div>
+</section>
+
+</body>
+</html>

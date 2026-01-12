@@ -10,6 +10,7 @@ from datetime import datetime
 from collections import deque
 from typing import Dict, List, Tuple
 import random
+from audio_module import AudioAnalyzer
 
 # Emotion labels
 EMOTIONS = ['angry', 'disgusted', 'fearful', 'happy', 'sad', 'surprised', 'neutral']
@@ -186,6 +187,7 @@ class MindCareDemoNoCamera:
         self.emotion_generator = DemoEmotionGenerator()
         self.time_processor = TimeWindowProcessor(window_size=60)
         self.voice_simulator = VoiceCommandSimulator()
+        self.audio_analyzer = AudioAnalyzer()
         
         self.is_running = False
         self.is_paused = False
@@ -318,6 +320,51 @@ class MindCareDemoNoCamera:
             cv2.putText(frame, line, (w - 270, y_offset), 
                        cv2.FONT_HERSHEY_SIMPLEX, 0.45, (255, 255, 255), 1)
             y_offset += 22
+
+    def draw_audio_panel(self, frame: np.ndarray, x: int, y: int, width: int, height: int):
+        """Draw audio waveform and emotion analysis."""
+        # Background
+        cv2.rectangle(frame, (x, y), (x + width, y + height), (20, 20, 20), -1)
+        
+        # Audio Title
+        cv2.putText(frame, "AUDIO ANALYSIS", (x + 10, y + 20), 
+                   cv2.FONT_HERSHEY_SIMPLEX, 0.5, (200, 200, 200), 1)
+        
+        # Get data
+        audio_state = self.audio_analyzer.get_current_state()
+        waveform = self.audio_analyzer.get_waveform()
+        
+        # Draw waveform
+        if waveform:
+            center_y = y + height // 2 + 10
+            points = []
+            for i, val in enumerate(waveform):
+                px = int(x + 10 + (i / len(waveform)) * (width - 20))
+                py = int(center_y + val * (height / 3))
+                points.append((px, py))
+            
+            if len(points) > 1:
+                cv2.polylines(frame, [np.array(points)], False, (0, 255, 255), 1)
+        
+        # Draw Emotion Tag
+        emotion = audio_state["emotion"]
+        color = (100, 100, 100)
+        if emotion != "silence":
+            color = COLORS.get(emotion, (255, 255, 255))
+        
+        cv2.putText(frame, f"Detected: {emotion.upper()}", (x + width - 180, y + 20), 
+                   cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 1)
+        
+        # Draw Energy Bar
+        energy = audio_state["energy"]
+        bar_w = 100
+        bar_h = 6
+        bar_x = x + width - 120
+        bar_y = y + 40
+        cv2.rectangle(frame, (bar_x, bar_y), (bar_x + bar_w, bar_y + bar_h), (50, 50, 50), -1)
+        cv2.rectangle(frame, (bar_x, bar_y), (bar_x + int(bar_w * energy), bar_y + bar_h), (0, 255, 0), -1)
+        cv2.putText(frame, "Energy", (bar_x - 50, bar_y + 5), 
+                   cv2.FONT_HERSHEY_SIMPLEX, 0.4, (150, 150, 150), 1)
     
     def run(self):
         """Run the demo."""

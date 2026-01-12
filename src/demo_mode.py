@@ -10,6 +10,7 @@ import random
 from datetime import datetime
 from collections import deque
 from typing import Dict, List, Tuple
+from audio_module import AudioAnalyzer
 
 # Emotion labels
 EMOTIONS = ['angry', 'disgusted', 'fearful', 'happy', 'sad', 'surprised', 'neutral']
@@ -40,8 +41,17 @@ class DemoEmotionGenerator:
         self.emotion_duration = 0
         self.transition_prob = 0.05  # 5% chance to change emotion each frame
         
-    def get_emotion_probabilities(self) -> Dict[str, float]:
+    def get_emotion_probabilities(self, is_smiling: bool = False) -> Dict[str, float]:
         """Generate realistic emotion probabilities."""
+        
+        # REACTIVE MODE: If smile detected, force happy
+        if is_smiling:
+            self.current_emotion = 'happy'
+            self.emotion_duration = 0
+            probs = {e: 0.02 for e in EMOTIONS}
+            probs['happy'] = 0.88
+            return probs
+
         # Occasionally transition to new emotion
         if random.random() < self.transition_prob or self.emotion_duration > 90:
             # Weighted random selection (more likely to be neutral/happy)
@@ -159,6 +169,7 @@ class MindCareDemoApp:
         self.emotion_generator = DemoEmotionGenerator()
         self.time_processor = TimeWindowProcessor(window_size=60)
         self.voice_simulator = VoiceCommandSimulator()
+        self.audio_analyzer = AudioAnalyzer()
         
         self.cap = None
         self.face_cascade = None
@@ -186,21 +197,30 @@ class MindCareDemoApp:
         
         for idx in camera_indices:
             print(f"Trying camera index {idx}...")
-            self.cap = cv2.VideoCapture(idx)
+            # Try AP_AVFOUNDATION for Mac
+            self.cap = cv2.VideoCapture(idx, cv2.CAP_AVFOUNDATION)
+            if not self.cap.isOpened():
+                 self.cap = cv2.VideoCapture(idx)
             
             if self.cap.isOpened():
-                # Test if we can actually read a frame
-                ret, test_frame = self.cap.read()
-                if ret and test_frame is not None:
-                    self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-                    self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-                    self.cap.set(cv2.CAP_PROP_FPS, 30)
-                    
-                    print(f"✓ Camera initialized (index {idx})")
-                    return True
-                else:
-                    self.cap.release()
-                    print(f"  Camera {idx} opened but cannot read frames")
+                # Warm up camera
+                print(f"  Camera {idx} opened. Warming up...")
+                for i in range(10): # Try for 1 second
+                    ret, test_frame = self.cap.read()
+                    if ret and test_frame is not None:
+                        print(f"  Frame captured! Resolution: {test_frame.shape}")
+                        # Found a working frame
+                        self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+                        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+                        self.cap.set(cv2.CAP_PROP_FPS, 30)
+                        
+                        print(f"✓ Camera initialized (index {idx})")
+                        return True
+                    time.sleep(0.1)
+                
+                # If we get here, we failed to read frames after opening
+                self.cap.release()
+                print(f"  Camera {idx} opened but cannot read frames (timeout)")
             else:
                 print(f"  Camera {idx} not available")
         
@@ -354,6 +374,51 @@ class MindCareDemoApp:
             cv2.putText(frame, line, (w - 270, y_offset), 
                        cv2.FONT_HERSHEY_SIMPLEX, 0.45, (255, 255, 255), 1)
             y_offset += 22
+
+    def draw_audio_panel(self, frame: np.ndarray, x: int, y: int, width: int, height: int):
+        """Draw audio waveform and emotion analysis."""
+        # Background
+        cv2.rectangle(frame, (x, y), (x + width, y + height), (20, 20, 20), -1)
+        
+        # Audio Title
+        cv2.putText(frame, "AUDIO ANALYSIS", (x + 10, y + 20), 
+                   cv2.FONT_HERSHEY_SIMPLEX, 0.5, (200, 200, 200), 1)
+        
+        # Get data
+        audio_state = self.audio_analyzer.get_current_state()
+        waveform = self.audio_analyzer.get_waveform()
+        
+        # Draw waveform
+        if waveform:
+            center_y = y + height // 2 + 10
+            points = []
+            for i, val in enumerate(waveform):
+                px = int(x + 10 + (i / len(waveform)) * (width - 20))
+                py = int(center_y + val * (height / 3))
+                points.append((px, py))
+            
+            if len(points) > 1:
+                cv2.polylines(frame, [np.array(points)], False, (0, 255, 255), 1)
+        
+        # Draw Emotion Tag
+        emotion = audio_state["emotion"]
+        color = (100, 100, 100)
+        if emotion != "silence":
+            color = COLORS.get(emotion, (255, 255, 255))
+        
+        cv2.putText(frame, f"Detected: {emotion.upper()}", (x + width - 180, y + 20), 
+                   cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 1)
+        
+        # Draw Energy Bar
+        energy = audio_state["energy"]
+        bar_w = 100
+        bar_h = 6
+        bar_x = x + width - 120
+        bar_y = y + 40
+        cv2.rectangle(frame, (bar_x, bar_y), (bar_x + bar_w, bar_y + bar_h), (50, 50, 50), -1)
+        cv2.rectangle(frame, (bar_x, bar_y), (bar_x + int(bar_w * energy), bar_y + bar_h), (0, 255, 0), -1)
+        cv2.putText(frame, "Energy", (bar_x - 50, bar_y + 5), 
+                   cv2.FONT_HERSHEY_SIMPLEX, 0.4, (150, 150, 150), 1)
     
     def run(self):
         """Run the demo."""
